@@ -10,7 +10,19 @@ services:
     volumes:
       - ./php:/srv/app
   python:
+    deploy:
+      replicas: 2
     image: python:3.6.1-alpine
+    working_dir: /srv/app
+    volumes:
+      - ./python:/srv/app
+    command: python main.py
+    depends_on:
+      - statsd-exporter
+  python35:
+    image: python:3.5.1-alpine
+    deploy:
+      replicas: 2
     working_dir: /srv/app
     volumes:
       - ./python:/srv/app
@@ -24,6 +36,7 @@ services:
       - php
       - statsd-exporter
       - python
+      - python35
       - grafana
       - prom
     volumes:
