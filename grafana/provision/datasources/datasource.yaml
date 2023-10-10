@@ -1,0 +1,7 @@
+apiVersion: 1
+
+datasources:
+  - name: Prometheus
+    url: http://prom:9090/prom
+    type: prometheus
+    default: 1

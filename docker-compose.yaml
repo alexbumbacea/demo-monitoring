@@ -1,0 +1,65 @@
+version: '3.4'
+
+services:
+  php:
+    build:
+      context: ./php
+    depends_on:
+      - statsd-exporter
+    working_dir: /srv/app
+    volumes:
+      - ./php:/srv/app
+  python:
+    image: python:3.6.1-alpine
+    working_dir: /srv/app
+    volumes:
+      - ./python:/srv/app
+    command: python main.py
+    depends_on:
+      - statsd-exporter
+  nginx:
+    image: nginx:1.19-alpine
+    working_dir: /srv/app
+    depends_on:
+      - php
+      - statsd-exporter
+      - python
+      - grafana
+      - prom
+    volumes:
+      - ./nginx/conf.d/default.conf:/etc/nginx/conf.d/default.conf
+      - ./php:/srv/app
+    ports:
+      - "80:80"
+  statsd-exporter:
+    image: prom/statsd-exporter:v0.24.0
+    command:
+      - '--statsd.mapping-config=/metrics.conf'
+      - --log.level=debug
+      - --no-statsd.parse-dogstatsd-tags
+      - --no-statsd.parse-influxdb-tags
+      - --no-statsd.parse-signalfx-tags
+#      - --statsd.listen-udp=
+    volumes:
+      - ./statsd-exporter/metrics.conf:/metrics.conf
+  prom:
+    image: prom/prometheus:v2.47.1
+    volumes:
+      - ./prom/prometheus.yml:/etc/prometheus/prometheus.yml
+      - ./prom/data:/prometheus
+    user: "1000"
+    command:
+      - --config.file=/etc/prometheus/prometheus.yml
+      - --web.enable-admin-api
+      - --web.route-prefix=/prom
+    extra_hosts:
+      - host.docker.internal:host-gateway
+  grafana:
+    image: grafana/grafana:10.0.0
+    user: "1000"
+    volumes:
+      - ./grafana/data:/var/lib/grafana
+      - ./grafana/grafana.ini:/etc/grafana/grafana.ini
+      - ./grafana/provision:/etc/grafana/provisioning
+
+

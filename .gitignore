@@ -1,0 +1,5 @@
+/grafana/data/*
+/prom/data/*
+!.gitkeep
+/.idea
+*.iml
