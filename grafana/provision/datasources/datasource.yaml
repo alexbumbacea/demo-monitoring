@@ -5,3 +5,4 @@ datasources:
     url: http://prom:9090/prom
     type: prometheus
     default: 1
+    uid: prom

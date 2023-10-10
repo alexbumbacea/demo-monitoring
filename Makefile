@@ -12,9 +12,14 @@ build.%: SERVICE=$*
 build.%:
 	docker-compose build $(SERVICE)
 
+restart.%: SERVICE=$*
+restart.%:
+	docker-compose restart $(SERVICE)
+
 logs.%: SERVICE=$*
 logs.%:
 	docker-compose logs -f --tail 100 $(SERVICE)
+
 stop:
 	docker-compose stop
 start-testing:
