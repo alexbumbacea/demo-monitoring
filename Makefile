@@ -28,3 +28,5 @@ start-testing:
 	ab -n 10000 -m POST -c 20 -t 600 http://localhost/python35/ &
 	ab -n 10000 -c 20 -t 600 http://localhost/php/ &
 	ab -n 10000 -m PATCH -c 20 -t 600 http://localhost/php/ &
+	ab -n 10000 -m PATCH -c 20 -t 600 http://localhost/golang/ &
+	ab -n 10000 -m GET -c 20 -t 600 http://localhost/golang/ &

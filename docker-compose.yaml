@@ -37,6 +37,7 @@ services:
       - statsd-exporter
       - python
       - python35
+      - golang
       - grafana
       - prom
     volumes:
@@ -75,4 +76,12 @@ services:
       - ./grafana/grafana.ini:/etc/grafana/grafana.ini
       - ./grafana/provision:/etc/grafana/provisioning
 
-
+  golang:
+    image: golang:1.22
+    volumes:
+      - ./golang:/app
+    working_dir: /app
+    command:
+      - go
+      - run
+      - ./
